@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div class="w3-padding-jumbo">
+    <h1>
+      <b><i class="fa fa-wrench"></i> Materiales</b>
+    </h1>
+
+    <div class="w3-margin-top w3-padding-top">
+      <div class="w3-white w3-card-2 w3-padding">
+
+        <a href="/material/new/" class="w3-btn w3-large w3-blue w3-margin-bottom">
+          <i class="fa fa-plus"></i> Nuevo material
+        </a>
+
+        <table class="w3-table w3-centered w3-hoverable w3-margin-top w3-border">
+          <thead>
+            <tr class="w3-blue">
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Unidad</th>
+              <th>Precio</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for material in mater %}
+
+              <tr>
+                <td>{{ material.id }}</td>
+                <td>{{ material.nombre }}</td>
+                <td>{{ material.unidad }}</td>
+                <td>Q. {{ material.precio }}</td>
+                <td>
+                  <a href="/material/edit/{{ material.id }}">
+                    <i class="fa fa-pencil-square-o w3-text-blue"></i>
+                  </a>
+                  <a href="/material/delete/{{ material.id }}">
+                    <i class="fa fa-trash-o w3-text-red"></i>
+                  </a>
+                </td>
+              </tr>
+
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

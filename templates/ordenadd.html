@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div class="w3-padding-jumbo">
+    <h1>
+      <b><i class="fa fa-wrench"></i>Materiales</b>
+    </h1>
+
+    <div class="w3-margin-top w3-padding-top">
+      <div class="w3-white w3-card-2 w3-padding">
+        <h2>Nuevo material</h2>
+
+        {% from 'includes/_formhelpers.html' import render_field %}
+        <form method="POST">
+          <div class="form-group">
+            {{ render_field(form.encargado, class_="w3-input w3-border-0 w3-light-gray ") }}
+          </div>
+          <div class="form-group">
+            {{ render_field(form.fecha, class_="w3-input w3-border-0 w3-light-gray ") }}
+          </div>
+          <div class="form-group">
+            <select class="w3-input w3-border-0 w3-light-gray" name="materiales" multiple>
+              {% for mat in mater %}
+                <option value="{{ mat.id }}">{{ mat.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="w3-btn w3-blue w3-large"> <i class="fa fa-floppy"></i> Guardar</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div class="w3-padding-jumbo">
+    <h1>
+      <b><i class="fa fa-file-text"></i> Ordenes de compra</b>
+    </h1>
+    <div class="w3-margin-top w3-padding-top">
+      <div class="w3-white w3-card-2 w3-padding">
+
+        <a href="/orden/new/" class="w3-btn w3-large w3-blue w3-margin-bottom">
+          <i class="fa fa-plus"></i> Nueva orden
+        </a>
+
+        <table class="w3-table w3-centered w3-hoverable w3-margin-top w3-border">
+          <thead>
+            <tr class="w3-blue">
+              <th>ID</th>
+              <th>Encargado</th>
+              <th>Fecha</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for orden in ordenes %}
+
+              <tr>
+                <td>{{ orden.id }}</td>
+                <td>{{ orden.encargado }}</td>
+                <td>{{ orden.fecha }}</td>
+                <td>
+                  <a href="/orden/{{ orden.id }}">
+                    <i class="fa fa-search w3-text-blue"></i>
+                  </a>
+                </td>
+              </tr>
+
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
