@@ -2,4 +2,12 @@
   <a href="/" class="w3-button w3-bar-item"><i class="fa fa-home"></i> Home</a>
   <a href="/ordenes" class="w3-button w3-bar-item"><i class="fa fa-file-text"></i> ODC</a>
   <a href="/materiales" class="w3-button w3-bar-item"><i class="fa fa-wrench"></i> Materiales</a>
+  {% if session.logged_in %}
+    <div class="w3-button w3-bar-item w3-right">
+      <i class="fa fa-user-circle-o"></i> {{ session.username }}
+    </div>
+    <a href="/logout" class="w3-button w3-bar-item w3-right"><i class="fa fa-lock"></i> log out</a>
+  {% else %}
+    <a href="/login" class="w3-button w3-bar-item w3-right"><i class="fa fa-lock"></i> Login</a>
+  {% endif %}
 </div>

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from data import Materiales
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, PasswordField, validators
+from functools import wraps
 app = Flask(__name__)
 #MySQL STUFF---------------------------------------------------------
 app.config['MYSQL_HOST']='localhost'
@@ -10,6 +11,40 @@ app.config['MYSQL_PASSWORD']='sergio1234'
 app.config['MYSQL_DB']='odc'
 app.config['MYSQL_CURSORCLASS']='DictCursor'
 mysql = MySQL(app)
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        userpass = request.form['userpass']
+        cur = mysql.connection.cursor()
+        result = cur.execute("SELECT * FROM usuarios WHERE usuario = %s and pass= %s", (username, userpass))
+        if result > 0:
+            data = cur.fetchall()
+            app.logger.info('PASSWORD MATCHED')
+            session['logged_in']=True
+            session['username']=username
+            return redirect(url_for('index'))
+
+        else:
+            error = "Usuario o pass no coinciden"
+            return render_template('login.html', error = error)
+        cur.close()
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return(*args, *kwargs)
+        else:
+            return redirect(url_for('login'))
+    return wrap
 
 
 @app.route('/')
@@ -30,6 +65,7 @@ def materiales():
 
 
 @app.route('/material/edit/<string:id>', methods = ['GET', 'POST'])
+@is_logged_in
 def materialedit(id):
     cur = mysql.connection.cursor()
     result = cur.execute("SELECT * FROM proyecto_app_material WHERE id = %s", [id])
@@ -60,6 +96,7 @@ class AddMaterial(Form):
     precio = StringField(u'Precio')
 
 @app.route('/material/new/', methods = ['GET', 'POST'])
+@is_logged_in
 def materialadd():
     form = AddMaterial(request.form)
     if request.method == 'POST' and form.validate():
@@ -76,6 +113,7 @@ def materialadd():
     return render_template('materialadd.html', form=form)
 
 @app.route('/material/delete/<string:id>', methods = ['GET', 'POST'])
+@is_logged_in
 def materialdelete(id):
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM material WHERE id=%s", (id))
@@ -102,6 +140,7 @@ class AddOrden(Form):
 
 
 @app.route('/orden/new/', methods = ['GET', 'POST'])
+@is_logged_in
 def ordenadd():
     form = AddOrden(request.form)
     cur = mysql.connection.cursor()
@@ -118,7 +157,7 @@ def ordenadd():
         cur.close()
 
 
-        
+
         for mat in materiales:
             cur = mysql.connection.cursor()
             cur.execute("INSERT INTO proyecto_app_descripcion (encabezado_id, material_id) VALUES (%s, %s)", (1, mat))
